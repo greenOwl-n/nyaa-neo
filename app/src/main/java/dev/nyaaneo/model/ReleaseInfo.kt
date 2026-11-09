@@ -71,7 +71,8 @@ data class ReleaseInfo(
             if ("it" in tokens) languages += ReleaseLanguage.ITALIAN
             if ("jp" in tokens || "ja" in tokens) languages += ReleaseLanguage.JAPANESE
             val raw = categoryId in setOf("1_4", "3_3", "4_4") || category.contains("Raw", true)
-            val english = categoryId in setOf("1_2", "3_1", "4_1") || category.contains("English-translated", true)
+            val english = if (categoryId.isNotBlank()) categoryId in setOf("1_2", "3_1", "4_1")
+                else category.contains("English-translated", true) && !category.contains("Non-English", true)
             val anime = categoryId.startsWith("1_") || category.startsWith("Anime", true)
             return ReleaseInfo(group, languages,
                 Regex("multi[ _-]?(?:sub(?:title)?s?)", RegexOption.IGNORE_CASE).containsMatchIn(rest),

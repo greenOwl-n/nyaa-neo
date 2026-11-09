@@ -71,6 +71,13 @@ class ReleaseInfoTest {
         assertNull(release.group)
         assertTrue(LanguageFilter.SPANISH.accepts(release))
     }
+    @Test fun nonEnglishCategoryIsNeverMistakenForEnglish() {
+        for (code in listOf("1_3", "")) {
+            val release = ReleaseInfo.from("[Group] Anime - 01", code, "Anime - Non-English-translated")
+            assertFalse(release.englishCategory)
+            assertFalse(LanguageFilter.ENGLISH.accepts(release))
+        }
+    }
     @Test fun supportsSortingByLeechers() {
         val releases = listOf(Torrent("1", "A", "", leechers = 2), Torrent("2", "B", "", leechers = 12))
         assertEquals("2", releases.sortedByOrder(SortOrder.LEECHERS).first().id)

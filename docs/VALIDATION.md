@@ -8,6 +8,8 @@ Se ejecutó una primera compilación local con las nuevas dependencias: **BUILD 
 
 La revisión final se comprobó con `bash ./gradlew :app:assembleDebug :app:testDebugUnitTest :app:lintDebug --console=plain`: **BUILD SUCCESSFUL in 1m 7s**. Resultado: **38 pruebas**, 0 fallos y 0 omitidas; Android Lint, 0 errores y 6 advertencias de actualización de dependencias. Incluye el caso de regresión de códigos de idioma al principio del título y la cancelación de consultas de carátulas.
 
+Una revisión posterior detectó una ambigüedad en la categoría `Non-English-translated`. Se corrigió para dar prioridad al ID de categoría y excluir expresamente `Non-English` en los favoritos antiguos. La comprobación completa posterior terminó **BUILD SUCCESSFUL in 55s**, con **39 pruebas aprobadas**, 0 omitidas y Lint con 0 errores y 6 advertencias de actualización de dependencias.
+
 Fuentes comprobadas por HTTPS durante esta sesión:
 
 - RSS anime de Nyaa (`?page=rss&c=1_0&f=0`).
