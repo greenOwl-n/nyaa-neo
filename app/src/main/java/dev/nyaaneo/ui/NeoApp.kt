@@ -3,6 +3,7 @@
 package dev.nyaaneo.ui
 
 import android.content.ActivityNotFoundException
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -16,6 +17,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -24,10 +27,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
@@ -152,7 +155,7 @@ private fun ExploreScreen(state: NeoState, model: NeoViewModel, onDetail: (Torre
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { focus.clearFocus(); model.search() }),
             )
-            IconButton(onClick = { focus.clearFocus(); model.search() }) { Icon(Icons.Default.ArrowForward, "Buscar", tint = NeonCyan) }
+            IconButton(onClick = { focus.clearFocus(); model.search() }) { Icon(Icons.AutoMirrored.Filled.ArrowForward, "Buscar", tint = NeonCyan) }
         }
         Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
             TextButton(onClick = { filtersOpen = !filtersOpen }) {
@@ -273,7 +276,8 @@ private fun StatusPanel(title: String, description: String = "", icon: ImageVect
 @Composable
 private fun DetailScreen(torrent: Torrent?, favorite: Boolean, onBack: () -> Unit, onFavorite: () -> Unit,
                          onMagnet: () -> Unit, onWebsite: () -> Unit, onMessage: (String) -> Unit) {
-    val clipboard = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
+    val scope = rememberCoroutineScope()
     Column(Modifier.fillMaxSize()) {
         TopAppBar(title = { Text("Detalle // NEO") },
             navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Volver") } },
@@ -301,11 +305,16 @@ private fun DetailScreen(torrent: Torrent?, favorite: Boolean, onBack: () -> Uni
                 Button(onClick = onMagnet, modifier = Modifier.fillMaxWidth()) {
                     Icon(Icons.Default.Download, null); Spacer(Modifier.width(8.dp)); Text("Abrir magnet")
                 }
-                OutlinedButton(onClick = { clipboard.setText(AnnotatedString(torrent.magnet)); onMessage("Magnet copiado") }, modifier = Modifier.fillMaxWidth()) {
+                OutlinedButton(onClick = {
+                    scope.launch {
+                        clipboard.setClipEntry(ClipEntry(ClipData.newPlainText("Magnet", torrent.magnet)))
+                        onMessage("Magnet copiado")
+                    }
+                }, modifier = Modifier.fillMaxWidth()) {
                     Icon(Icons.Default.ContentCopy, null); Spacer(Modifier.width(8.dp)); Text("Copiar magnet")
                 }
                 OutlinedButton(onClick = onWebsite, modifier = Modifier.fillMaxWidth()) {
-                    Icon(Icons.Default.OpenInNew, null); Spacer(Modifier.width(8.dp)); Text("Ver en Nyaa.si")
+                    Icon(Icons.AutoMirrored.Filled.OpenInNew, null); Spacer(Modifier.width(8.dp)); Text("Ver en Nyaa.si")
                 }
                 Text("Necesitas una aplicación compatible con BitTorrent para abrir el magnet.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 HorizontalDivider()

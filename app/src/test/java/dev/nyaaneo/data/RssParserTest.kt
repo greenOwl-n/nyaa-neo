@@ -52,9 +52,12 @@ class RssParserTest {
         assertEquals("Software - Applications", torrent.category)
         assertTrue(torrent.magnet.contains("45008e48c8800b7d7643337b2e70a634e4c69f6a"))
     }
-    @Test(expected = Exception::class) fun rejectsMalformedXml() { RssParser().parse("<rss><channel><item>".reader()) }
-    @Test(expected = Exception::class) fun rejectsDtdAndExternalEntities() {
-        RssParser().parse("""<!DOCTYPE rss [<!ENTITY x SYSTEM "file:///etc/passwd">]><rss><channel>&x;</channel></rss>""".reader())
+    @Test(expected = org.xmlpull.v1.XmlPullParserException::class) fun rejectsMalformedXml() { RssParser().parse("<rss><channel><item>".reader()) }
+    @Test fun rejectsDtdAndExternalEntities() {
+        val error = assertThrows(IllegalArgumentException::class.java) {
+            RssParser().parse("""<!DOCTYPE rss [<!ENTITY x SYSTEM "file:///etc/passwd">]><rss><channel>&x;</channel></rss>""".reader())
+        }
+        assertTrue(error.message.orEmpty().contains("DTD"))
     }
     @Test fun encodesQueryAndFiltersWithoutQueryInjection() {
         val url = NyaaRepository.buildFeedUrl("  A & B + español?  ", Category.ANIME_OTHER, FeedFilter.TRUSTED)

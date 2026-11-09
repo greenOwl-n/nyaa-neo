@@ -14,3 +14,5 @@ Se inicia el proyecto desde cero: no había repositorio ni código previo dispon
 - GitHub Actions para compilar APK debug, ejecutar pruebas/Lint y publicar artefactos.
 - Gradle Wrapper y documentación de instalación desde una tablet.
 - Pruebas de RSS, codificación de búsquedas, orden y serialización de favoritos.
+- Corrección tras las pruebas: compatibilidad entre proveedores XML al desactivar DTD, conservando su rechazo explícito.
+- Corrección tras la primera ejecución de Actions: eliminar la instalación implícita del paquete obsoleto Android `tools`.

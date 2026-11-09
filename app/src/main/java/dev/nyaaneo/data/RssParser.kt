@@ -9,7 +9,9 @@ import java.io.Reader
 class RssParser {
     fun parse(reader: Reader): List<Torrent> {
         val parser = XmlPullParserFactory.newInstance().apply { isNamespaceAware = true }.newPullParser()
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_DOCDECL, false)
+        // DTD processing is off by default. Some providers reject setFeature(false),
+        // so verify the default and reject DOCDECL tokens explicitly below.
+        check(!parser.getFeature(XmlPullParser.FEATURE_PROCESS_DOCDECL)) { "El parser no permite desactivar DTD" }
         parser.setInput(reader)
         val torrents = mutableListOf<Torrent>()
         var fields: MutableMap<String, String>? = null

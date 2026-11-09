@@ -34,4 +34,6 @@ Pendiente hasta instalar el APK:
 
 ## GitHub Actions
 
-Pendiente de disponer del repositorio remoto y ejecutar el workflow. No se ha generado todavía ningún enlace real a un artefacto de GitHub Actions.
+Repositorio: <https://github.com/greenOwl-n/nyaa-neo>.
+
+La primera ejecución ([42696047697](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42696047697)) falló en `android-actions/setup-android@v3`: su configuración por defecto intentaba instalar el paquete obsoleto `tools` (`Failed to find package 'tools'`). Se configuró explícitamente `packages: platform-tools`; el SDK 35 y Build Tools 35.0.0 se instalan en el paso siguiente. Pendiente de verificar la nueva ejecución y su artefacto.
