@@ -22,13 +22,36 @@ Las pruebas nuevas comprueban:
 
 Verificaciones reales por HTTPS:
 
-- RSS de Sukebei para anime; se verificó la categoría `1_1` sin copiar títulos ni imágenes explícitos al repositorio.
+- RSS de Sukebei para anime (`1_1`), manga (`1_4`) y doujinshi (`1_2`): 75 elementos y categoría correcta en cada respuesta, sin copiar títulos ni imágenes explícitos al repositorio.
 - Endpoint manga de Kitsu para Naruto: entrada de manga `35`, separada del anime.
 - Descargas válidas de póster original de Kitsu (460 × 690), banner Kitsu (1279 × 768), póster TVMaze (680 × 1000) y portada MangaDex (512 × 809).
 
 La primera pasada de las pruebas nuevas detectó una suposición incorrecta de la prueba: una URL original de Kitsu no contiene necesariamente la palabra `original`. Se corrigió la expectativa para comprobar la URL original real del fixture; el código seleccionaba el campo correcto.
 
-Pendiente de ejecutar y verificar GitHub Actions 0.3.0. La interacción y la instalación en una tablet siguen pendientes: la compilación, los parsers, la separación de datos y la caché se comprobaron automáticamente; la presentación visual no se ha validado en un dispositivo. No se ha medido un porcentaje global de cobertura de portadas ni se garantiza el 100%.
+### GitHub Actions 0.3.0 comprobado
+
+- [Ejecución 42707756998](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42707756998): `completed`, conclusión **success**.
+- Código compilado: `26130fa921d6c160ff991d5cf7fd2ec8bcbdb7f4`.
+- Compilación, pruebas y Lint: **BUILD SUCCESSFUL in 1m 5s**.
+- [Artefacto APK y checksum](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42707756998/artifacts/13714108072), disponible hasta el 9 de diciembre de 2026.
+- [Informes de pruebas y Lint](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42707756998/artifacts/13714382258), disponibles hasta el 23 de noviembre de 2026.
+
+Se descargó el ZIP real mediante el conector de GitHub. Su digest coincide con el publicado por Actions y el checksum del APK coincide con el archivo incluido:
+
+```text
+SHA-256 ZIP:
+623ddd3bcc9fb973e60cd164d0ee46cf1cea004cd2c2b3c69fc67e06cc11ba57
+
+SHA-256 nyaa-neo-debug.apk:
+7340b8afb40baa6db533b1aff4ab7bdd2101c257f1c1132187b5ac2bef138b78
+
+apksigner verify --verbose: Verifies; APK Signature Scheme v2: true
+aapt: dev.nyaaneo; versionCode 3; versionName 0.3.0; minSdk 26; targetSdk 35
+```
+
+El certificado de depuración de este APK tiene SHA-256 `3cffff9c6e015d51955084d79cf94ab1ed219f22a705bacc91226d597df1a5f5`; difiere del certificado de 0.2.0 (`08322fda…`) y de 0.1.0. La nota de instalación del README informa de la reinstalación y pérdida de datos. No se ha configurado firma persistente.
+
+La interacción y la instalación en una tablet siguen pendientes: la compilación, los parsers, la separación de datos y la caché se comprobaron automáticamente; la presentación visual no se ha validado en un dispositivo. No se ha medido un porcentaje global de cobertura de portadas ni se garantiza el 100%.
 
 Comprobación manual recomendada: recorrer Anime/Manga; activar +18, comprobar el selector de tipo y sus favoritos separados, desactivarlo; alternar cuadrícula/lista; buscar una portada por otro título, reiniciar y comprobar la caché; probar sin conexión y con tamaño de fuente aumentado.
 
