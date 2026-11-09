@@ -53,4 +53,29 @@ Pendiente hasta instalar el APK:
 
 Repositorio: <https://github.com/greenOwl-n/nyaa-neo>.
 
-La primera ejecución ([42696047697](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42696047697)) falló en `android-actions/setup-android@v3`: su configuración por defecto intentaba instalar el paquete obsoleto `tools` (`Failed to find package 'tools'`). Se configuró explícitamente `packages: platform-tools`; el SDK 35 y Build Tools 35.0.0 se instalan en el paso siguiente. Pendiente de verificar la nueva ejecución y su artefacto.
+La primera ejecución ([42696047697](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42696047697)) falló en `android-actions/setup-android@v3`: su configuración por defecto intentaba instalar el paquete obsoleto `tools` (`Failed to find package 'tools'`). Se configuró explícitamente `packages: platform-tools`; el SDK 35 y Build Tools 35.0.0 se instalan en el paso siguiente.
+
+La segunda ejecución ([42696267100](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42696267100)) superó la preparación del SDK y confirmó el fallo de la prueba de XML truncado. La corrección añadió validación de la raíz RSS y su cierre completo.
+
+### Ejecución final exitosa
+
+- [GitHub Actions 42696845362](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42696845362): estado `completed`, conclusión **success**.
+- Commit de código compilado: `53113e3d4bc6a41fea4dcae6090a1182bf22f291`.
+- Compilación, pruebas unitarias y Lint completados en el runner de GitHub con Java 17.
+- [Artefacto `nyaa-neo-debug`](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42696845362/artifacts/13709293557): APK y checksum, disponible hasta el 9 de diciembre de 2026.
+- [Artefacto `android-reports`](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42696845362/artifacts/13709328624): informes de pruebas y Lint, disponible hasta el 23 de noviembre de 2026.
+
+Se descargó el ZIP real mediante el conector GitHub y se comprobó:
+
+```text
+SHA-256 del ZIP (coincide con el digest de GitHub):
+9029972af66af593e38a9633b99e66137b62fa5abc6bb6d5aabc2f24c1919412
+
+SHA-256 de nyaa-neo-debug.apk (coincide con el archivo .sha256 incluido):
+98f091cef64876c663da4ec9cef2aa3d77753799b162ff584f60268b3b66a451
+
+apksigner verify --verbose: Verifies; APK Signature Scheme v2: true
+aapt dump badging: dev.nyaaneo; versionName 0.1.0; minSdk 26; targetSdk 35
+```
+
+La actualización final de enlaces y evidencia es un commit de documentación con `[skip ci]`: no cambia el código compilado ni requiere repetir la compilación.

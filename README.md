@@ -1,6 +1,10 @@
 # Nyaa Neo
 
+[![Android Debug APK](https://github.com/greenOwl-n/nyaa-neo/actions/workflows/android-debug.yml/badge.svg)](https://github.com/greenOwl-n/nyaa-neo/actions/workflows/android-debug.yml)
+
 Cliente Android nativo no oficial de **Nyaa.si**, desarrollado con Kotlin, Jetpack Compose, Material 3 y MVVM. Interfaz en español, fondo AMOLED negro y acentos cian. Compatible con Android 8.0 o posterior (API 26+).
+
+**[Descargar APK 0.1.0 desde GitHub Actions](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42696845362/artifacts/13709293557)** · [Ejecución verificada](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42696845362). Inicia sesión en GitHub, extrae el ZIP e instala `nyaa-neo-debug.apk`. Este artefacto caduca el 9 de diciembre de 2026; puedes generar otro desde Actions.
 
 ## Funciones
 
@@ -33,7 +37,7 @@ El APK de depuración usa una clave de desarrollo. Diferentes entornos de compil
 
 ## Herramientas y compilación local opcional
 
-El flujo habitual es GitHub Actions. Para otros entornos con Java y Android SDK:
+El flujo habitual es [GitHub Actions](https://github.com/greenOwl-n/nyaa-neo/actions/workflows/android-debug.yml). Para otros entornos con Java y Android SDK:
 
 ```sh
 bash ./gradlew :app:assembleDebug :app:testDebugUnitTest :app:lintDebug
