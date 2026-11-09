@@ -4,7 +4,9 @@
 
 Cliente Android nativo no oficial de **Nyaa.si**, desarrollado con Kotlin, Jetpack Compose, Material 3 y MVVM. Interfaz en español, fondo AMOLED negro y acentos cian. Compatible con Android 8.0 o posterior (API 26+).
 
-**[Descargar APK 0.1.0 desde GitHub Actions](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42696845362/artifacts/13709293557)** · [Ejecución verificada](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42696845362). Inicia sesión en GitHub, extrae el ZIP e instala `nyaa-neo-debug.apk`. Este artefacto caduca el 9 de diciembre de 2026; puedes generar otro desde Actions.
+**[Descargar APK 0.2.0 desde GitHub Actions](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42701812527/artifacts/13712485231)** · [Ejecución verificada](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42701812527). Inicia sesión en GitHub, extrae el ZIP e instala `nyaa-neo-debug.apk`. Este artefacto caduca el 9 de diciembre de 2026; puedes generar otro desde Actions.
+
+**Si ya instalaste 0.1.0:** se comprobó que este APK tiene otra firma de depuración; Android no permite actualizar directamente sobre el anterior. Antes de reinstalar, copia los magnets de los favoritos que quieras conservar: desinstalar elimina los datos de la aplicación. El formato de favoritos sigue siendo compatible; la limitación está en la firma de estos APK de desarrollo.
 
 ## Funciones
 

@@ -19,7 +19,30 @@ Fuentes comprobadas por HTTPS durante esta sesión:
 
 Las pruebas verifican que se elige la serie que coincide y no el primer resultado del catálogo, que se rechazan imágenes HTTP o de otros hosts, que los favoritos de 0.1.0 siguen siendo legibles y que «Multi-sub» no se convierte en una afirmación de subtítulos en español.
 
-Pendiente de la ejecución de Actions de 0.2.0. La evidencia y los enlaces de los apartados siguientes corresponden a 0.1.0.
+### GitHub Actions 0.2.0 comprobado
+
+- [Ejecución 42701812527](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42701812527): `completed`, conclusión **success**.
+- Código compilado: `23b7c999fefbb6b23d982a466bc3064aded43ab5`.
+- Compilación, pruebas unitarias y Lint: **BUILD SUCCESSFUL in 1m 2s**.
+- [APK y checksum](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42701812527/artifacts/13712485231), hasta el 9 de diciembre de 2026.
+- [Informes de pruebas y Lint](https://github.com/greenOwl-n/nyaa-neo/actions/runs/42701812527/artifacts/13710644924), hasta el 23 de noviembre de 2026.
+
+Se descargó el artefacto real con el conector de GitHub y se verificó su ZIP, el checksum del APK, la firma y los metadatos:
+
+```text
+SHA-256 ZIP (coincide con el digest publicado por GitHub):
+d65c0cf40b791e02d8a8cd5f2b18b05e4e119384902a480ad5fe5858f98b63bd
+
+SHA-256 nyaa-neo-debug.apk (coincide con el .sha256 incluido):
+a23da26fe09b00696d668d5b4def6ff2b3df558db1cbb424331510f6e981f1b0
+
+apksigner verify --verbose: Verifies; APK Signature Scheme v2: true
+aapt: dev.nyaaneo; versionCode 2; versionName 0.2.0; minSdk 26; targetSdk 35
+```
+
+Se compararon los certificados de los APK de Actions de 0.1.0 y 0.2.0: son diferentes (`16592fa7…` y `08322fda…`, SHA-256 del certificado). Android no permitirá actualizar uno sobre el otro sin reinstalar; desinstalar elimina los favoritos. Esto se informa junto a la descarga en el README. No se ha configurado una clave de firma persistente ni se ha probado la instalación sobre 0.1.0 en un dispositivo.
+
+La evidencia y los enlaces de los apartados siguientes corresponden a 0.1.0.
 
 La interacción en dispositivo sigue pendiente: comprobar etiquetas de idioma y grupo, filtro local, detalle con cuenta o anónimo, refresco de estadísticas, placeholders, carátulas y su interruptor (también sin conexión). Las pruebas de persistencia cubren el formato y su compatibilidad; no se ha probado una actualización del APK en una tablet. La firma de desarrollo puede cambiar entre runners, como se explica en el README.
 
