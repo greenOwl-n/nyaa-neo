@@ -1,5 +1,16 @@
 # Cambios
 
+## 0.2.0
+
+- Idiomas destacados en tarjetas, lista compacta y detalles, con filtro local por español, inglés, multi-sub/audio, raw y otros/sin indicar.
+- Detección orientativa desde el título; se diferencia la categoría inglesa de Nyaa de un idioma explícito. Multi-sub no se interpreta automáticamente como español ni raw como audio japonés.
+- Fansub/grupo extraído del prefijo del título, omitiendo etiquetas técnicas e idiomas.
+- Usuario real de publicación consultado desde el detalle de Nyaa, separado del grupo del archivo; también se muestra cuando la publicación es anónima.
+- Carátulas orientativas de anime desde Kitsu con Coil, placeholders y ajuste persistente para desactivarlas. Solo se buscan para anime, con coincidencia de títulos, caché y consultas espaciadas.
+- Contadores destacados de seeds, leechers y descargas; orden por leechers y actualización de estadísticas desde el detalle.
+- Los favoritos mantienen compatibilidad con 0.1.0 y pueden conservar el usuario y los datos actualizados cuando se consulta su detalle.
+- Pruebas de idiomas/grupos, búsqueda de carátulas, parser HTML real y compatibilidad de favoritos.
+
 ## 0.1.0
 
 Se inicia el proyecto desde cero: no había repositorio ni código previo disponible.

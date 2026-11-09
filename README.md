@@ -10,15 +10,24 @@ Cliente Android nativo no oficial de **Nyaa.si**, desarrollado con Kotlin, Jetpa
 
 - Búsqueda por RSS con texto, categorías y subcategorías de Nyaa.si.
 - Filtros: todos, sin remakes y solo publicadores confiables.
-- Orden local: recientes, seeds, descargas y título.
+- Idiomas destacados y filtro local: español, inglés, multi-sub/audio, raw y otros/sin indicar.
+- Fansub/grupo del título y usuario real que publicó el torrent en el detalle de Nyaa.
+- Carátulas orientativas de anime desde Kitsu, con opción para desactivarlas.
+- Orden local: recientes, seeds, leechers, descargas y título.
 - Tarjetas o lista compacta, con preferencia persistente.
-- Detalles con tamaño, fecha, categoría y estadísticas.
+- Contadores destacados de seeds, leechers y descargas; detalle con actualización de usuario y estadísticas.
 - Favoritos persistentes con metadatos disponibles sin conexión.
 - Abrir y copiar magnets; abrir la página original.
 - Navegación inferior: Explorar, Favoritos y Ajustes.
 - Estados de carga, resultados vacíos y error con reintento.
 
 El RSS devuelve una ventana limitada de resultados. El orden se aplica a esa ventana, no al catálogo completo. Las descripciones completas y los comentarios se consultan mediante «Ver en Nyaa.si». No incluye un motor BitTorrent: los magnets se abren en una aplicación externa compatible.
+
+Los idiomas se deducen de etiquetas del nombre y de la categoría; no se inspeccionan las pistas del archivo. La etiqueta «Inglés · categoría» puede referirse a audio o subtítulos. «Multi-sub» no garantiza español y «Raw» no confirma el idioma del audio. El filtro de idioma se aplica al RSS recibido: para buscar más publicaciones en español puedes añadir `Spanish`, `ESP` o el nombre de un fansub al texto de búsqueda.
+
+«Grupo» corresponde al prefijo del archivo, por ejemplo `[SubsPlease]`; no verifica la autoría del contenido ni la identidad de la cuenta. El usuario que lo publica se obtiene por separado de Nyaa al abrir el detalle y puede ser anónimo. Sin red se mantienen los datos guardados y los controles de magnet/favoritos.
+
+Las imágenes son carátulas de catálogo de Kitsu, no capturas ni imágenes del archivo torrent. Se limpia el nombre del episodio y se compara con títulos/alias del catálogo; si no hay coincidencia suficiente se muestra un placeholder. La coincidencia es orientativa, especialmente entre temporadas. El enlace a Kitsu del detalle permite comprobarla. Las consultas se deduplican por serie, se espacian al menos 1,1 segundos y se mantienen hasta 128 resultados en memoria; Coil gestiona la caché de imágenes. Las carátulas no están garantizadas sin conexión.
 
 ## Compilar y descargar desde una tablet
 
@@ -49,6 +58,7 @@ bash ./gradlew :app:assembleDebug :app:testDebugUnitTest :app:lintDebug
 - SDK y target 35; Build Tools 35.0.0.
 - Compose BOM 2025.04.01; Material 3; Navigation Compose.
 - OkHttp para HTTPS; XmlPullParser para RSS; DataStore Preferences para persistencia.
+- Jsoup para usuario/estadísticas del detalle; Coil 2.7.0 para imágenes del catálogo Kitsu.
 
 El SDK se configura con `ANDROID_HOME` o con `sdk.dir` en `local.properties` (no versionado). El APK aparece en `app/build/outputs/apk/debug/app-debug.apk`.
 
@@ -56,9 +66,9 @@ El SDK se configura con `ANDROID_HOME` o con `sdk.dir` en `local.properties` (no
 
 ```text
 app/src/main/java/dev/nyaaneo/
-  model/       Torrent, categorías, filtros y orden
-  data/        RSS, cliente HTTPS, serialización y DataStore
-  ui/          ViewModel, tema Compose y pantallas
+  model/       Torrent, idiomas, grupo, categorías, filtros y orden
+  data/        RSS, detalle HTML, carátulas, HTTPS y DataStore
+  ui/          ViewModel, pantallas, tema, carátulas y estadísticas
   MainActivity.kt
   NeoApplication.kt
 .github/workflows/android-debug.yml
@@ -70,6 +80,8 @@ El ViewModel expone un `StateFlow`; las pantallas lo observan con el ciclo de vi
 ## Privacidad y datos
 
 Las búsquedas se envían a `https://nyaa.si/` por HTTPS. No se añaden cuentas, anuncios ni analítica. Los favoritos permanecen en el almacenamiento privado de la aplicación, sin backup automático, y se pierden al desinstalar o borrar sus datos. «Confiable» reproduce la etiqueta del publicador en Nyaa.si; no valida el contenido del torrent.
+
+Con las carátulas activadas se envía el nombre limpio del anime a `https://kitsu.io/api/edge/anime` y se descarga la imagen por HTTPS desde `media.kitsu.app` o `media.kitsu.io`. Puedes desactivar estas consultas en **Ajustes → Carátulas de anime**; el ajuste se guarda entre sesiones. Los idiomas y el grupo se calculan localmente. El usuario y las estadísticas del detalle se consultan en `https://nyaa.si/view/ID`.
 
 ## Estado de verificación
 

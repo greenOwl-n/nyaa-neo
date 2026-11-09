@@ -103,8 +103,13 @@ fun NeoApp(model: NeoViewModel) {
             }
             composable("settings") { SettingsScreen(state, model) }
             composable("detail/{id}") { backStack ->
-                val torrent = model.torrent(backStack.arguments?.getString("id").orEmpty())
+                val id = backStack.arguments?.getString("id").orEmpty()
+                val torrent = model.torrent(id)
+                LaunchedEffect(id) { if (id.matches(Regex("\\d+"))) model.loadDetails(id) }
+                LaunchedEffect(torrent?.id, state.showArtwork) { if (state.showArtwork) torrent?.let(model::loadArtwork) }
                 DetailScreen(torrent, state.favorites.any { it.id == torrent?.id },
+                    state = state,
+                    onRefresh = { model.loadDetails(id, force = true) },
                     onBack = { nav.popBackStack() },
                     onFavorite = { torrent?.let(model::toggleFavorite) },
                     onMagnet = { torrent?.let { openExternal(context, it.magnet, showMessage) } },
@@ -139,6 +144,9 @@ private fun ViewToggle(compact: Boolean, onToggle: () -> Unit) {
 private fun ExploreScreen(state: NeoState, model: NeoViewModel, onDetail: (Torrent) -> Unit) {
     val focus = LocalFocusManager.current
     var filtersOpen by rememberSaveable { mutableStateOf(false) }
+    val visible = remember(state.torrents, state.language, state.sort) {
+        state.torrents.filter { state.language.accepts(it.releaseInfo) }.sortedByOrder(state.sort)
+    }
     Column(Modifier.fillMaxSize().widthIn(max = 960.dp)) {
         PageTitle("NYAA // NEO", "EXPLORA · ENCUENTRA · GUARDA") {
             ViewToggle(state.compact) { model.setCompact(!state.compact) }
@@ -178,14 +186,19 @@ private fun ExploreScreen(state: NeoState, model: NeoViewModel, onDetail: (Torre
         }
         Text("Orden local del RSS: ${state.sort.label}", Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        ChoiceMenu("Idioma en este RSS", state.language, LanguageFilter.entries, { it.label }, model::setLanguage,
+            Modifier.padding(horizontal = 16.dp))
         when {
             state.loading -> StatusPanel("Consultando Nyaa.si…", loading = true)
             state.error != null -> StatusPanel("No se pudo cargar el RSS", state.error, Icons.Default.CloudOff, "Reintentar", model::search)
             state.searched && state.torrents.isEmpty() -> StatusPanel("Sin resultados", "Prueba otra búsqueda o cambia los filtros.", Icons.Default.SearchOff)
+            visible.isEmpty() && state.torrents.isNotEmpty() -> StatusPanel("Sin coincidencias de idioma en este RSS",
+                "El filtro usa indicios del título y la categoría. Prueba añadir Spanish o ESP a tu búsqueda, o selecciona Todos.",
+                Icons.Default.Translate, "Mostrar todos", { model.setLanguage(LanguageFilter.ALL) })
             else -> {
-                Text("${state.torrents.size} resultados · ${state.resultsLabel}", Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                Text("${visible.size} de ${state.torrents.size} resultados · ${state.resultsLabel}", Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
                     maxLines = 2, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                TorrentList(state.torrents.sortedByOrder(state.sort), state, model::toggleFavorite, onDetail)
+                TorrentList(visible, state, model::toggleFavorite, onDetail, model::loadArtwork)
             }
         }
     }
@@ -222,41 +235,51 @@ private fun FavoritesScreen(state: NeoState, model: NeoViewModel, onDetail: (Tor
         when {
             state.favorites.isEmpty() -> StatusPanel("Tu colección empieza aquí", "Toca la estrella de un torrent para guardarlo.", Icons.Default.StarOutline)
             torrents.isEmpty() -> StatusPanel("Sin coincidencias", "Prueba otro título.", Icons.Default.SearchOff)
-            else -> TorrentList(torrents, state, model::toggleFavorite, onDetail)
+            else -> TorrentList(torrents, state, model::toggleFavorite, onDetail, model::loadArtwork)
         }
     }
 }
 
 @Composable
-private fun TorrentList(torrents: List<Torrent>, state: NeoState, onFavorite: (Torrent) -> Unit, onDetail: (Torrent) -> Unit) {
+private fun TorrentList(torrents: List<Torrent>, state: NeoState, onFavorite: (Torrent) -> Unit, onDetail: (Torrent) -> Unit, onArtwork: (Torrent) -> Unit) {
     val favoriteIds = remember(state.favorites) { state.favorites.map { it.id }.toSet() }
     LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(if (state.compact) 2.dp else 12.dp)) {
         items(torrents, key = { it.id }) { torrent ->
-            TorrentItem(torrent, state.compact, torrent.id in favoriteIds, { onFavorite(torrent) }, { onDetail(torrent) })
+            LaunchedEffect(torrent.id, state.showArtwork) { if (state.showArtwork) onArtwork(torrent) }
+            TorrentItem(torrent, state.compact, torrent.id in favoriteIds, state.showArtwork,
+                state.artworks[torrent.releaseInfo.animeQuery], { onFavorite(torrent) }, { onDetail(torrent) })
         }
-        item { Text("Datos del RSS de Nyaa.si. Las estadísticas pueden cambiar.", Modifier.padding(vertical = 16.dp),
+        item { Text("Datos del RSS de Nyaa.si. Idiomas y grupo según título/categoría. Carátulas orientativas de Kitsu. Las estadísticas pueden cambiar.", Modifier.padding(vertical = 16.dp),
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
     }
 }
 
 @Composable
-private fun TorrentItem(t: Torrent, compact: Boolean, favorite: Boolean, onFavorite: () -> Unit, onDetail: () -> Unit) {
+private fun TorrentItem(t: Torrent, compact: Boolean, favorite: Boolean, showArtwork: Boolean, artwork: AnimeArtwork?, onFavorite: () -> Unit, onDetail: () -> Unit) {
+    val info = t.releaseInfo
     OutlinedCard(onClick = onDetail, modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = BorderStroke(1.dp, if (compact) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.outline.copy(alpha = 0.6f))) {
-        Row(Modifier.padding(start = 14.dp, top = 8.dp, bottom = 8.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.padding(if (compact) 10.dp else 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.Top) {
+            if (showArtwork && info.animeQuery != null) AnimeCover(artwork, Modifier.width(if (compact) 48.dp else 88.dp).height(if (compact) 72.dp else 132.dp))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                if (!compact) Text(t.category.uppercase(Locale.ROOT), style = MaterialTheme.typography.labelSmall, color = NeonCyan)
+                Text("Grupo: ${info.group ?: "Sin indicar"}", style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold, color = NeonCyan, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(t.title, maxLines = if (compact) 2 else 3, overflow = TextOverflow.Ellipsis,
                     style = if (compact) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.titleSmall)
-                Text("${t.size}  ·  ↑ ${t.seeders}  ·  ↓ ${t.leechers}" + if (t.trusted) "  ·  ✓ Confiable" else "",
+                ReleaseBadges(info, compact)
+                Text("${t.size}" + if (t.trusted) "  ·  ✓ Confiable" else "",
                     style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                if (!compact) Text(formatDate(t.published), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             IconButton(onClick = onFavorite) {
                 Icon(if (favorite) Icons.Default.Star else Icons.Default.StarOutline,
                     if (favorite) "Quitar de favoritos" else "Guardar favorito", tint = if (favorite) NeonCyan else MaterialTheme.colorScheme.onSurfaceVariant)
             }
+        }
+        SwarmStats(t.seeders, t.leechers, t.downloads, compact)
+        if (!compact) Text((if (t.seeders == 0) "Sin seeds reportados · " else "") + formatDate(t.published),
+            style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -274,7 +297,7 @@ private fun StatusPanel(title: String, description: String = "", icon: ImageVect
 }
 
 @Composable
-private fun DetailScreen(torrent: Torrent?, favorite: Boolean, onBack: () -> Unit, onFavorite: () -> Unit,
+private fun DetailScreen(torrent: Torrent?, favorite: Boolean, state: NeoState, onRefresh: () -> Unit, onBack: () -> Unit, onFavorite: () -> Unit,
                          onMagnet: () -> Unit, onWebsite: () -> Unit, onMessage: (String) -> Unit) {
     val clipboard = LocalClipboard.current
     val scope = rememberCoroutineScope()
@@ -291,15 +314,47 @@ private fun DetailScreen(torrent: Torrent?, favorite: Boolean, onBack: () -> Uni
         if (torrent == null) {
             StatusPanel("Detalle no disponible", "Vuelve a buscar este torrent o abre uno de tus favoritos.", action = "Volver", onAction = onBack)
         } else {
+            val info = torrent.releaseInfo
+            val details = state.details[torrent.id]
+            val artwork = state.artworks[info.animeQuery]
+            val context = LocalContext.current
             Column(Modifier.widthIn(max = 960.dp).verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(torrent.category.uppercase(Locale.ROOT), style = MaterialTheme.typography.labelMedium, color = NeonCyan)
+                if (state.showArtwork && info.animeQuery != null) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        AnimeCover(artwork, Modifier.size(width = 104.dp, height = 156.dp))
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("Fansub / grupo", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(info.group ?: "No indicado en el título", style = MaterialTheme.typography.titleLarge, color = NeonCyan)
+                            artwork?.let {
+                                Text("Carátula orientativa: ${it.title}", style = MaterialTheme.typography.bodySmall)
+                                TextButton(onClick = { openExternal(context, it.pageUrl, onMessage) }) { Text("Ver ficha en Kitsu") }
+                            }
+                        }
+                    }
+                } else Text("Fansub / grupo: ${info.group ?: "No indicado en el título"}", color = NeonCyan, style = MaterialTheme.typography.titleMedium)
                 Text(torrent.title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                ReleaseBadges(info)
+                Text(info.languageExplanation, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = MaterialTheme.shapes.medium) {
+                    Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text("Publicado en Nyaa por", style = MaterialTheme.typography.labelMedium)
+                        Text(details?.uploader ?: torrent.uploader ?: if (torrent.id in state.detailsLoading) "Consultando…" else "No disponible",
+                            style = MaterialTheme.typography.titleMedium, color = NeonCyan)
+                        Text("El usuario que publica puede ser distinto del grupo indicado en el título.", style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+                state.detailsErrors[torrent.id]?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
                 if (torrent.trusted) AssistChip(onClick = {}, label = { Text("Publicador confiable en Nyaa.si") }, leadingIcon = { Icon(Icons.Default.Verified, null) })
                 Text("#${torrent.id} · ${formatDate(torrent.published)}", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Stat("Seeds", torrent.seeders.toString(), Modifier.weight(1f))
-                    Stat("Leeches", torrent.leechers.toString(), Modifier.weight(1f))
-                    Stat("Descargas", torrent.downloads.toString(), Modifier.weight(1f))
+                SwarmStats(details?.seeders ?: torrent.seeders, details?.leechers ?: torrent.leechers, details?.downloads ?: torrent.downloads)
+                Text(if (details != null) "Estadísticas consultadas en Nyaa al abrir o actualizar este detalle."
+                    else "Estadísticas del RSS o de tu favorito guardado.", style = MaterialTheme.typography.labelSmall)
+                Text("Seeds: comparten el archivo completo. Leechers: están descargando. Un número de seeds mayor que cero no garantiza disponibilidad continua.",
+                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                OutlinedButton(onClick = onRefresh, enabled = torrent.id !in state.detailsLoading) {
+                    Icon(Icons.Default.Refresh, null); Spacer(Modifier.width(8.dp))
+                    Text(if (torrent.id in state.detailsLoading) "Actualizando…" else "Actualizar publicador y estadísticas")
                 }
                 Text("Tamaño: ${torrent.size}", style = MaterialTheme.typography.titleMedium)
                 Button(onClick = onMagnet, modifier = Modifier.fillMaxWidth()) {
@@ -327,16 +382,6 @@ private fun DetailScreen(torrent: Torrent?, favorite: Boolean, onBack: () -> Uni
 }
 
 @Composable
-private fun Stat(label: String, value: String, modifier: Modifier) {
-    Surface(modifier, shape = MaterialTheme.shapes.medium, color = MaterialTheme.colorScheme.surfaceVariant) {
-        Column(Modifier.padding(horizontal = 8.dp, vertical = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(value, style = MaterialTheme.typography.titleMedium, color = NeonCyan)
-            Text(label, style = MaterialTheme.typography.labelSmall)
-        }
-    }
-}
-
-@Composable
 private fun SettingsScreen(state: NeoState, model: NeoViewModel) {
     Column(Modifier.fillMaxSize().widthIn(max = 960.dp).verticalScroll(rememberScrollState())) {
         PageTitle("Ajustes", "TU ESPACIO · TU ESTILO")
@@ -347,11 +392,19 @@ private fun SettingsScreen(state: NeoState, model: NeoViewModel) {
             }
             Switch(checked = state.compact, onCheckedChange = model::setCompact)
         }
+        Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text("Carátulas de anime", style = MaterialTheme.typography.titleMedium)
+                Text("Búsqueda orientativa en Kitsu. Envía el nombre del anime al catálogo y descarga su imagen.",
+                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Switch(checked = state.showArtwork, onCheckedChange = model::setArtwork)
+        }
         Column(Modifier.padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             ChoiceMenu("Orden de resultados", state.sort, SortOrder.entries, { it.label }, model::setSort)
             HorizontalDivider()
             Text("Nyaa Neo", style = MaterialTheme.typography.titleLarge, color = NeonCyan)
-            Text("Versión 0.1.0 · Android nativo", style = MaterialTheme.typography.bodyMedium)
+            Text("Versión 0.2.0 · Android nativo", style = MaterialTheme.typography.bodyMedium)
             Text("Tema AMOLED negro con acentos cian. Los favoritos se guardan en este dispositivo y se eliminan si borras los datos o desinstalas la aplicación.", style = MaterialTheme.typography.bodyMedium)
             Text("La búsqueda consulta el RSS de Nyaa.si. Cada respuesta contiene una cantidad limitada de torrents. El ordenamiento se aplica únicamente a los resultados recibidos; no hay paginación global del catálogo.", style = MaterialTheme.typography.bodyMedium)
             Text("Cliente no oficial, sin afiliación con Nyaa.si. Nyaa Neo abre los magnet en aplicaciones externas.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

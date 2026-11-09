@@ -11,8 +11,11 @@ data class Torrent(
     val leechers: Int = 0,
     val downloads: Int = 0,
     val trusted: Boolean = false,
+    val categoryId: String = "",
+    val uploader: String? = null,
 ) {
     val pageUrl: String get() = "https://nyaa.si/view/$id"
+    val releaseInfo: ReleaseInfo by lazy { ReleaseInfo.from(title, categoryId, category) }
 }
 
 enum class Category(val code: String, val label: String) {
@@ -35,12 +38,13 @@ enum class FeedFilter(val code: String, val label: String) {
 }
 
 enum class SortOrder(val label: String) {
-    RECENT("Más recientes"), SEEDERS("Más seeds"), DOWNLOADS("Más descargas"), TITLE("Título A–Z")
+    RECENT("Más recientes"), SEEDERS("Más seeds"), LEECHERS("Más leechers"), DOWNLOADS("Más descargas"), TITLE("Título A–Z")
 }
 
 fun List<Torrent>.sortedByOrder(order: SortOrder): List<Torrent> = when (order) {
     SortOrder.RECENT -> sortedByDescending { it.id.toLongOrNull() ?: 0L }
     SortOrder.SEEDERS -> sortedWith(compareByDescending<Torrent> { it.seeders }.thenByDescending { it.id.toLongOrNull() })
+    SortOrder.LEECHERS -> sortedByDescending { it.leechers }
     SortOrder.DOWNLOADS -> sortedByDescending { it.downloads }
     SortOrder.TITLE -> sortedBy { it.title.lowercase(java.util.Locale.ROOT) }
 }

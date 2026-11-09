@@ -16,4 +16,16 @@ class FavoritesCodecTest {
         assertEquals(listOf(torrent), FavoritesCodec.decode("[null,{},$valid"))
     }
     @Test fun handlesEmptyFavorites() { assertEquals(emptyList<Torrent>(), FavoritesCodec.decode("[]")) }
+    @Test fun preservesCategoryAndRealUploaderInNewFavorites() {
+        val torrent = Torrent("123", "[NeoSubs] Anime [ESP]", "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567",
+            categoryId = "1_3", uploader = "NeoUploader")
+        assertEquals(torrent, FavoritesCodec.decode(FavoritesCodec.encode(listOf(torrent))).single())
+    }
+    @Test fun oldFavoritesRemainCompatibleWithoutNewFields() {
+        val old = """[{"id":"123","title":"[Group] Anime","magnet":"magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"}]"""
+        val torrent = FavoritesCodec.decode(old).single()
+        assertEquals("", torrent.categoryId)
+        assertNull(torrent.uploader)
+        assertEquals("Group", torrent.releaseInfo.group)
+    }
 }

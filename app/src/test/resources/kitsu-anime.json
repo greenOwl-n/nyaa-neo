@@ -1,0 +1,89 @@
+{
+  "data": [
+    {
+      "id": "1555",
+      "type": "anime",
+      "attributes": {
+        "canonicalTitle": "Naruto: Shippuuden",
+        "titles": {
+          "en": "Naruto: Shippuden",
+          "en_jp": "Naruto: Shippuuden",
+          "en_us": "Naruto: Shippuden",
+          "ja_jp": "ナルト- 疾風伝"
+        },
+        "abbreviatedTitles": [
+          "Naruto Hurricane Chronicles"
+        ],
+        "posterImage": {
+          "tiny": "https://media.kitsu.app/anime/poster_images/1555/tiny.jpg",
+          "large": "https://media.kitsu.app/anime/poster_images/1555/large.jpg",
+          "small": "https://media.kitsu.app/anime/poster_images/1555/small.jpg",
+          "medium": "https://media.kitsu.app/anime/poster_images/1555/medium.jpg",
+          "original": "https://media.kitsu.app/anime/poster_images/1555/original.jpg",
+          "meta": {
+            "dimensions": {
+              "tiny": {
+                "width": 110,
+                "height": 156
+              },
+              "large": {
+                "width": 550,
+                "height": 780
+              },
+              "small": {
+                "width": 284,
+                "height": 402
+              },
+              "medium": {
+                "width": 390,
+                "height": 554
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "11",
+      "type": "anime",
+      "attributes": {
+        "canonicalTitle": "Naruto",
+        "titles": {
+          "en": "Naruto",
+          "en_jp": "Naruto",
+          "ja_jp": "ナルト"
+        },
+        "abbreviatedTitles": [
+          "NARUTO"
+        ],
+        "posterImage": {
+          "tiny": "https://media.kitsu.app/anime/11/poster_image/tiny-47d378c5faf258491fd1a2025fc1507c.jpeg",
+          "large": "https://media.kitsu.app/anime/11/poster_image/large-5e901605066f7f2727f49d01859bbfe4.jpeg",
+          "small": "https://media.kitsu.app/anime/11/poster_image/small-db4debb693482e09f5d9615864b99b3d.jpeg",
+          "medium": "https://media.kitsu.app/anime/11/poster_image/medium-410cee5d114a5f70d69e795755e8348a.jpeg",
+          "original": "https://media.kitsu.app/anime/11/poster_image/4512d403727b2a19a6eb7e7a959be0c3.jpg",
+          "meta": {
+            "dimensions": {
+              "tiny": {
+                "width": 110,
+                "height": 156
+              },
+              "large": {
+                "width": 550,
+                "height": 780
+              },
+              "small": {
+                "width": 284,
+                "height": 402
+              },
+              "medium": {
+                "width": 390,
+                "height": 554
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

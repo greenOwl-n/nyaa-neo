@@ -12,6 +12,8 @@ object FavoritesCodec {
             put("size", t.size); put("category", t.category); put("published", t.published)
             put("seeders", t.seeders); put("leechers", t.leechers); put("downloads", t.downloads)
             put("trusted", t.trusted)
+            put("categoryId", t.categoryId)
+            put("uploader", t.uploader ?: JSONObject.NULL)
         }) }
     }.toString()
 
@@ -25,7 +27,8 @@ object FavoritesCodec {
             if (!id.matches(Regex("\\d+")) || title.isBlank() || !magnet.startsWith("magnet:?xt=urn:btih:")) return@mapNotNull null
             Torrent(id, title, magnet, item.optString("size", "—"), item.optString("category"),
                 item.optString("published"), item.optInt("seeders"), item.optInt("leechers"),
-                item.optInt("downloads"), item.optBoolean("trusted"))
+                item.optInt("downloads"), item.optBoolean("trusted"), item.optString("categoryId"),
+                item.optString("uploader").takeIf { it.isNotBlank() })
         }.distinctBy { it.id }
     }
 }

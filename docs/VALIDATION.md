@@ -2,6 +2,27 @@
 
 Este archivo documenta evidencia real. No sustituye una prueba de uso en Android.
 
+## Versión 0.2.0: idiomas, grupo, carátulas y estadísticas
+
+Se ejecutó una primera compilación local con las nuevas dependencias: **BUILD SUCCESSFUL in 1m 43s**, 37 pruebas sin fallos y Lint sin errores.
+
+La revisión final se comprobó con `bash ./gradlew :app:assembleDebug :app:testDebugUnitTest :app:lintDebug --console=plain`: **BUILD SUCCESSFUL in 1m 7s**. Resultado: **38 pruebas**, 0 fallos y 0 omitidas; Android Lint, 0 errores y 6 advertencias de actualización de dependencias. Incluye el caso de regresión de códigos de idioma al principio del título y la cancelación de consultas de carátulas.
+
+Fuentes comprobadas por HTTPS durante esta sesión:
+
+- RSS anime de Nyaa (`?page=rss&c=1_0&f=0`).
+- Página real `https://nyaa.si/view/2184421`: usuario anónimo, campos de seeds/leechers/completados; se conserva como fixture de parser HTML.
+- Respuesta real de Kitsu para `Naruto`: se guardó un fixture reducido con títulos, alias y URLs de poster.
+- Descarga de la URL `medium` exacta de ese catálogo: JPEG válido de 390 × 554 píxeles.
+
+Las pruebas verifican que se elige la serie que coincide y no el primer resultado del catálogo, que se rechazan imágenes HTTP o de otros hosts, que los favoritos de 0.1.0 siguen siendo legibles y que «Multi-sub» no se convierte en una afirmación de subtítulos en español.
+
+Pendiente de la ejecución de Actions de 0.2.0. La evidencia y los enlaces de los apartados siguientes corresponden a 0.1.0.
+
+La interacción en dispositivo sigue pendiente: comprobar etiquetas de idioma y grupo, filtro local, detalle con cuenta o anónimo, refresco de estadísticas, placeholders, carátulas y su interruptor (también sin conexión). Las pruebas de persistencia cubren el formato y su compatibilidad; no se ha probado una actualización del APK en una tablet. La firma de desarrollo puede cambiar entre runners, como se explica en el README.
+
+## Evidencia de la versión 0.1.0
+
 ## Entorno
 
 - Linux x86_64; Eclipse Temurin JDK 17.0.21.

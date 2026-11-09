@@ -60,13 +60,14 @@ class RssParser {
             id, title, magnet, get("size") ?: "—", get("category") ?: "Sin categoría",
             get("pubDate") ?: "", number("seeders"), number("leechers"), number("downloads"),
             get("trusted").equals("yes", true) || get("trusted").equals("true", true),
+            get("categoryId") ?: "",
         )
     }
 
     private fun Map<String, String>.number(key: String) = get(key)?.toIntOrNull()?.coerceAtLeast(0) ?: 0
 
     companion object {
-        private val TAGS = setOf("title", "link", "guid", "pubDate", "infoHash", "size", "category", "seeders", "leechers", "downloads", "trusted")
+        private val TAGS = setOf("title", "link", "guid", "pubDate", "infoHash", "size", "category", "categoryId", "seeders", "leechers", "downloads", "trusted")
         private val ID = Regex("https://nyaa\\.si/view/(\\d+)(?:[/?#].*)?$")
         private val HASH = Regex("(?:[a-fA-F0-9]{40}|[A-Z2-7a-z]{32})")
         private val MAGNET_HASH = Regex("urn:btih:([^&]+)", RegexOption.IGNORE_CASE)
