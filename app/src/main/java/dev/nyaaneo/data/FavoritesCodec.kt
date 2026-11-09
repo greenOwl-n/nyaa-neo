@@ -1,6 +1,7 @@
 package dev.nyaaneo.data
 
 import dev.nyaaneo.model.Torrent
+import dev.nyaaneo.model.TorrentSource
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -14,6 +15,7 @@ object FavoritesCodec {
             put("trusted", t.trusted)
             put("categoryId", t.categoryId)
             put("uploader", t.uploader ?: JSONObject.NULL)
+            put("source", t.source.name)
         }) }
     }.toString()
 
@@ -24,11 +26,13 @@ object FavoritesCodec {
             val id = item.optString("id")
             val title = item.optString("title")
             val magnet = item.optString("magnet")
+            val source = TorrentSource.entries.firstOrNull { it.name == item.optString("source", "NYAA") }
+                ?: return@mapNotNull null
             if (!id.matches(Regex("\\d+")) || title.isBlank() || !magnet.startsWith("magnet:?xt=urn:btih:")) return@mapNotNull null
             Torrent(id, title, magnet, item.optString("size", "—"), item.optString("category"),
                 item.optString("published"), item.optInt("seeders"), item.optInt("leechers"),
                 item.optInt("downloads"), item.optBoolean("trusted"), item.optString("categoryId"),
-                item.optString("uploader").takeIf { it.isNotBlank() })
-        }.distinctBy { it.id }
+                item.optString("uploader").takeIf { it.isNotBlank() }, source)
+        }.distinctBy { it.key }
     }
 }

@@ -1,5 +1,19 @@
 # Cambios
 
+## 0.3.0
+
+- Secciones Anime, Manga, +18 y Todo, con categorías de búsqueda propias y separación equivalente en favoritos.
+- Manga consulta Literatura de Nyaa: el origen también puede incluir cómics y novelas.
+- Catálogo +18 opcional de Sukebei para anime, manga y doujinshi, desactivado inicialmente, con miniaturas neutras y sin consultas a los catálogos generales de portadas.
+- Identidad de torrents compuesta por fuente e ID; enlaces, favoritos, detalles y estadísticas no colisionan entre Nyaa y Sukebei. Los favoritos anteriores siguen siendo compatibles.
+- Vista de tarjetas convertida en cuadrícula adaptable de pósteres con degradados, título, metadatos y acceso a favoritos; se mantiene la lista compacta.
+- Banners panorámicos en el detalle cuando el catálogo los ofrece, y portadas originales con resoluciones alternativas si falla la descarga principal.
+- Portadas para anime y manga: Kitsu, respaldo de TVMaze para anime y MangaDex para manga.
+- Búsqueda por títulos alternativos, limpieza de episodios/volúmenes y coincidencia de romanizaciones; se distinguen temporadas numéricas.
+- Caché de coincidencias persistente entre sesiones y búsqueda manual de portada desde los detalles.
+- Consultas de catálogo limitadas por host y hasta tres búsquedas simultáneas; cancelación al cambiar de búsqueda o desactivar imágenes.
+- Compilación local, 68 pruebas unitarias y Android Lint comprobados; evidencia en `docs/VALIDATION.md`.
+
 ## 0.2.0
 
 - Idiomas destacados en tarjetas, lista compacta y detalles, con filtro local por español, inglés, multi-sub/audio, raw y otros/sin indicar.

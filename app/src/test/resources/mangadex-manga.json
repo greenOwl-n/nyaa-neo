@@ -1,0 +1,226 @@
+{
+  "data": [
+    {
+      "id": "a1c7c817-4e59-43b7-9365-09675a149a6f",
+      "type": "manga",
+      "attributes": {
+        "title": {
+          "ja-ro": "One Piece"
+        },
+        "altTitles": [
+          {
+            "ja": "ワンピース"
+          },
+          {
+            "uk": "Ван Піс"
+          },
+          {
+            "ru": "One Piece. Большой куш"
+          },
+          {
+            "ru": "Ван Пис"
+          },
+          {
+            "fa": "وان پیس"
+          },
+          {
+            "hi": "वन पीस"
+          },
+          {
+            "bn": "ওয়ান পিস"
+          },
+          {
+            "ne": "वान पिस"
+          },
+          {
+            "ne": "वान पीस"
+          },
+          {
+            "ta": "ஒன் பீஸ்"
+          },
+          {
+            "th": "วันพีซ"
+          },
+          {
+            "mn": "Уан Пийс"
+          },
+          {
+            "kk": "Уан Пис"
+          },
+          {
+            "kk": "One Piece. Батпан құйрық"
+          },
+          {
+            "kk": "Бір бөлік"
+          },
+          {
+            "he": "וואן פיס"
+          },
+          {
+            "ar": "ون بيس"
+          },
+          {
+            "ar": "قطعة واحدة"
+          },
+          {
+            "zh": "海贼王"
+          },
+          {
+            "zh": "海盗路飞"
+          },
+          {
+            "zh": "航海王"
+          },
+          {
+            "zh-hk": "海賊王"
+          },
+          {
+            "my": "ဝမ်းပိစ်"
+          },
+          {
+            "vi": "Đảo Hải Tặc"
+          },
+          {
+            "vi": "Vua Hải Tặc"
+          },
+          {
+            "ms": "Budak Getah"
+          },
+          {
+            "ko": "원피스"
+          },
+          {
+            "te": "వన్ పీస్"
+          },
+          {
+            "be": "Ўан Піс"
+          },
+          {
+            "be": "Ўанпіс"
+          },
+          {
+            "be": "Ўан-Піс"
+          },
+          {
+            "en": "One Piece"
+          },
+          {
+            "ur": "ون پیس"
+          }
+        ],
+        "contentRating": "suggestive"
+      },
+      "relationships": [
+        {
+          "id": "38383930-d836-4fd7-85f7-ecfebdea3e3c",
+          "type": "cover_art",
+          "attributes": {
+            "description": "",
+            "volume": "1",
+            "fileName": "2f4aca53-64c7-46ac-ae85-3bc9b3169890.png",
+            "locale": "ja",
+            "createdAt": "2022-06-13T23:09:29+00:00",
+            "updatedAt": "2026-03-25T14:59:13+00:00",
+            "version": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "a2c1d849-af05-4bbc-b2a7-866ebb10331f",
+      "type": "manga",
+      "attributes": {
+        "title": {
+          "en": "One Piece (Official Colored)"
+        },
+        "altTitles": [
+          {
+            "ru": "Ван Пис"
+          },
+          {
+            "ar": "ون پیس"
+          },
+          {
+            "zh": "海贼王"
+          },
+          {
+            "ko": "원피스"
+          },
+          {
+            "ja": "ONE PIECE カラー版"
+          },
+          {
+            "uk": "Вап Піс"
+          },
+          {
+            "el": "One Piece (Επίσημα Έγχρωμο)"
+          },
+          {
+            "vi": "Đảo Hải Tặc"
+          },
+          {
+            "en": "One Piece - Digital Colored Comics"
+          }
+        ],
+        "contentRating": "suggestive"
+      },
+      "relationships": [
+        {
+          "id": "df8780c5-2c6a-4f11-b762-147195d5e593",
+          "type": "cover_art",
+          "attributes": {
+            "fileName": "da0341d8-5526-452c-8bd3-dc8e3cd89f99.jpg",
+            "description": "",
+            "volume": "1",
+            "locale": "ja",
+            "createdAt": "2022-06-13T17:27:14+00:00",
+            "updatedAt": "2022-06-13T17:27:14+00:00",
+            "version": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "b70113a5-32a3-44e8-a28f-0e88392808ba",
+      "type": "manga",
+      "attributes": {
+        "title": {
+          "en": "One Piece Academy"
+        },
+        "altTitles": [
+          {
+            "ja": "ONE PIECE学園"
+          },
+          {
+            "ja-ro": "One Piece Gakuen"
+          },
+          {
+            "en": "One Piece School"
+          },
+          {
+            "tr": "One Piece Akademisi"
+          },
+          {
+            "vi": "Học Viện One Piece"
+          }
+        ],
+        "contentRating": "safe"
+      },
+      "relationships": [
+        {
+          "id": "20171ce5-3164-46b3-befb-e743e491568e",
+          "type": "cover_art",
+          "attributes": {
+            "description": "",
+            "volume": "11",
+            "fileName": "22f544f1-32fc-4750-a1c4-2c851c876eb1.jpg",
+            "locale": "ja",
+            "createdAt": "2026-07-02T16:05:19+00:00",
+            "updatedAt": "2026-07-02T16:05:19+00:00",
+            "version": 1
+          }
+        }
+      ]
+    }
+  ]
+}

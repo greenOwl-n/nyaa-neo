@@ -2,6 +2,36 @@
 
 Este archivo documenta evidencia real. No sustituye una prueba de uso en Android.
 
+## Versión 0.3.0: secciones, fuente +18 y catálogo visual
+
+Comando: `bash ./gradlew :app:assembleDebug :app:testDebugUnitTest :app:lintDebug --console=plain` con Temurin 17 y el SDK Android 35.
+
+Resultado local final: **BUILD SUCCESSFUL in 1m 7s**; **68 pruebas aprobadas**, 0 fallos y 0 omitidas. Android Lint: 0 errores y 6 advertencias de actualización de dependencias. `apksigner verify --verbose` valida la firma APK v2; `aapt` confirma `dev.nyaaneo`, `versionCode 3`, `versionName 0.3.0`, minSdk 26 y target 35.
+
+Las pruebas nuevas comprueban:
+
+- Separación Anime/Manga/+18/Todo y categorías propias de cada fuente.
+- IDs numéricos iguales sin colisiones de favoritos ni enlaces entre Nyaa y Sukebei.
+- Parsing de RSS con el namespace de Sukebei y rechazo de enlaces de otro dominio.
+- Categorías +18 que no heredan erróneamente el significado raw/inglés de los códigos de Nyaa.
+- Limpieza de episodios, volúmenes, nombres de escena, títulos alternativos y romanizaciones.
+- Distinción entre anime/manga y entre temporadas numéricas, con respaldo a una portada de la serie.
+- Respuestas reales capturadas de Kitsu manga, TVMaze y MangaDex; selección de la serie principal frente a secuelas o spin-offs.
+- Recuperación de la portada desde una caché en archivo usando una nueva instancia del repositorio, sin acceder a la red.
+- Rechazo de imágenes HTTP, hosts inesperados y entradas explícitas en los catálogos generales de portadas.
+
+Verificaciones reales por HTTPS:
+
+- RSS de Sukebei para anime; se verificó la categoría `1_1` sin copiar títulos ni imágenes explícitos al repositorio.
+- Endpoint manga de Kitsu para Naruto: entrada de manga `35`, separada del anime.
+- Descargas válidas de póster original de Kitsu (460 × 690), banner Kitsu (1279 × 768), póster TVMaze (680 × 1000) y portada MangaDex (512 × 809).
+
+La primera pasada de las pruebas nuevas detectó una suposición incorrecta de la prueba: una URL original de Kitsu no contiene necesariamente la palabra `original`. Se corrigió la expectativa para comprobar la URL original real del fixture; el código seleccionaba el campo correcto.
+
+Pendiente de ejecutar y verificar GitHub Actions 0.3.0. La interacción y la instalación en una tablet siguen pendientes: la compilación, los parsers, la separación de datos y la caché se comprobaron automáticamente; la presentación visual no se ha validado en un dispositivo. No se ha medido un porcentaje global de cobertura de portadas ni se garantiza el 100%.
+
+Comprobación manual recomendada: recorrer Anime/Manga; activar +18, comprobar el selector de tipo y sus favoritos separados, desactivarlo; alternar cuadrícula/lista; buscar una portada por otro título, reiniciar y comprobar la caché; probar sin conexión y con tamaño de fuente aumentado.
+
 ## Versión 0.2.0: idiomas, grupo, carátulas y estadísticas
 
 Se ejecutó una primera compilación local con las nuevas dependencias: **BUILD SUCCESSFUL in 1m 43s**, 37 pruebas sin fallos y Lint sin errores.

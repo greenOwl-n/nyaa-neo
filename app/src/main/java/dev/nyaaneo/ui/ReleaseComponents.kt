@@ -7,14 +7,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Movie
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,18 +32,36 @@ private val SeedGreen = Color(0xFF65E5A5)
 private val LeechAmber = Color(0xFFFFC078)
 
 @Composable
-internal fun AnimeCover(artwork: AnimeArtwork?, modifier: Modifier = Modifier) {
+internal fun AnimeCover(artwork: AnimeArtwork?, modifier: Modifier = Modifier, title: String = "", adult: Boolean = false, hero: Boolean = false) {
+    val safeArtwork = artwork?.takeUnless { adult }
+    val urls = remember(safeArtwork, hero) {
+        if (safeArtwork == null) emptyList() else buildList {
+            if (hero) safeArtwork.bannerUrl?.let(::add)
+            add(safeArtwork.imageUrl)
+            addAll(safeArtwork.alternateImages)
+        }.distinct()
+    }
+    var imageIndex by remember(urls) { mutableIntStateOf(0) }
+    var loaded by remember(urls) { mutableStateOf(false) }
     Surface(modifier, shape = MaterialTheme.shapes.medium, color = MaterialTheme.colorScheme.surfaceVariant,
         border = BorderStroke(1.dp, NeonCyan.copy(alpha = 0.25f))) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(Icons.Default.Movie, if (artwork == null) "Carátula no disponible" else null,
-                Modifier.size(28.dp), tint = NeonCyan.copy(alpha = 0.5f))
-            if (artwork != null) {
-                AsyncImage(model = artwork.imageUrl, contentDescription = "Carátula orientativa de ${artwork.title}, Kitsu",
-                    modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-                Text("Kitsu · aprox.", Modifier.align(Alignment.BottomCenter).fillMaxWidth()
-                    .background(Color.Black.copy(alpha = 0.8f)).padding(horizontal = 4.dp, vertical = 2.dp), color = Color.White, fontSize = 9.sp,
-                    style = MaterialTheme.typography.labelSmall)
+        Box(Modifier.background(Brush.linearGradient(listOf(Color(0xFF12323D), Color(0xFF070C13), Color(0xFF103743)))), contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Icon(if (adult) Icons.Default.Lock else Icons.Default.Movie,
+                    if (adult) "Miniatura neutra de la sección +18" else if (!loaded) "Portada pendiente o no disponible de $title" else null,
+                    Modifier.size(if (adult) 36.dp else 28.dp), tint = NeonCyan.copy(alpha = 0.55f))
+                if (adult) Text("+18", style = MaterialTheme.typography.headlineMedium, color = NeonCyan)
+            }
+            if (safeArtwork != null && urls.isNotEmpty()) {
+                AsyncImage(model = urls[imageIndex], contentDescription = "Portada orientativa de ${safeArtwork.title}, ${safeArtwork.provider}",
+                    modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop,
+                    onSuccess = { loaded = true }, onError = {
+                        loaded = false
+                        if (imageIndex < urls.lastIndex) imageIndex++
+                    })
+                if (loaded) Text(safeArtwork.provider, Modifier.align(Alignment.TopStart)
+                    .background(Color.Black.copy(alpha = 0.70f)).padding(horizontal = 6.dp, vertical = 3.dp), color = Color.White,
+                    fontSize = 9.sp, style = MaterialTheme.typography.labelSmall)
             }
         }
     }

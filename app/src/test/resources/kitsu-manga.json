@@ -1,0 +1,93 @@
+{
+  "data": [
+    {
+      "id": "20055",
+      "type": "manga",
+      "attributes": {
+        "canonicalTitle": "Naruto Ninden Series",
+        "titles": {
+          "en": null,
+          "en_jp": "Naruto Ninden Series",
+          "ja_jp": "NARUTO -ナルト- 忍伝シリーズ"
+        },
+        "abbreviatedTitles": [
+          "Tale of the Utterly Gutsy Shinobi",
+          "Naruto Dokonjou Ninden",
+          "Naruto Dojunjou Ninden",
+          "The Tale of the Utterly Purehearted Shinobi"
+        ],
+        "posterImage": {
+          "tiny": "https://media.kitsu.app/manga/poster_images/20055/tiny.jpg",
+          "large": "https://media.kitsu.app/manga/poster_images/20055/large.jpg",
+          "small": "https://media.kitsu.app/manga/poster_images/20055/small.jpg",
+          "medium": "https://media.kitsu.app/manga/poster_images/20055/medium.jpg",
+          "original": "https://media.kitsu.app/manga/poster_images/20055/original.jpg",
+          "meta": {
+            "dimensions": {
+              "tiny": {
+                "width": null,
+                "height": null
+              },
+              "large": {
+                "width": null,
+                "height": null
+              },
+              "small": {
+                "width": null,
+                "height": null
+              },
+              "medium": {
+                "width": null,
+                "height": null
+              }
+            }
+          }
+        },
+        "coverImage": null,
+        "ageRating": null
+      }
+    },
+    {
+      "id": "35",
+      "type": "manga",
+      "attributes": {
+        "canonicalTitle": "NARUTO",
+        "titles": {
+          "en": "Naruto",
+          "en_jp": "NARUTO",
+          "ja_jp": "NARUTO―ナルト―"
+        },
+        "abbreviatedTitles": [],
+        "posterImage": {
+          "original": "https://media.kitsu.app/manga/35/poster_image/7f4e275e7e43c5d7cbfe969e9bbe203d.jpg",
+          "meta": {
+            "dimensions": {}
+          }
+        },
+        "coverImage": {
+          "tiny": "https://media.kitsu.app/manga/cover_images/35/tiny.jpg",
+          "large": "https://media.kitsu.app/manga/cover_images/35/large.jpg",
+          "small": "https://media.kitsu.app/manga/cover_images/35/small.jpg",
+          "original": "https://media.kitsu.app/manga/cover_images/35/original.jpg",
+          "meta": {
+            "dimensions": {
+              "tiny": {
+                "width": null,
+                "height": null
+              },
+              "large": {
+                "width": null,
+                "height": null
+              },
+              "small": {
+                "width": null,
+                "height": null
+              }
+            }
+          }
+        },
+        "ageRating": "G"
+      }
+    }
+  ]
+}

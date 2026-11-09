@@ -1,0 +1,112 @@
+[
+  {
+    "show": {
+      "id": 495,
+      "name": "Naruto",
+      "type": "Animation",
+      "image": {
+        "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/3/9744.jpg",
+        "original": "https://static.tvmaze.com/uploads/images/original_untouched/3/9744.jpg"
+      }
+    }
+  },
+  {
+    "show": {
+      "id": 488,
+      "name": "Naruto: Shippūden",
+      "type": "Animation",
+      "image": {
+        "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/3/9413.jpg",
+        "original": "https://static.tvmaze.com/uploads/images/original_untouched/3/9413.jpg"
+      }
+    }
+  },
+  {
+    "show": {
+      "id": 23796,
+      "name": "Boruto: Naruto Next Generations",
+      "type": "Animation",
+      "image": {
+        "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/101/253829.jpg",
+        "original": "https://static.tvmaze.com/uploads/images/original_untouched/101/253829.jpg"
+      }
+    }
+  },
+  {
+    "show": {
+      "id": 7115,
+      "name": "Naruto SD: Rock Lee no Seishun Full-Power Ninden",
+      "type": "Animation",
+      "image": {
+        "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/148/370704.jpg",
+        "original": "https://static.tvmaze.com/uploads/images/original_untouched/148/370704.jpg"
+      }
+    }
+  },
+  {
+    "show": {
+      "id": 26096,
+      "name": "Maruko",
+      "type": "Scripted",
+      "image": {
+        "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/102/256358.jpg",
+        "original": "https://static.tvmaze.com/uploads/images/original_untouched/102/256358.jpg"
+      }
+    }
+  },
+  {
+    "show": {
+      "id": 90593,
+      "name": "Shitsuren Karuta",
+      "type": "Scripted",
+      "image": {
+        "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/615/1539579.jpg",
+        "original": "https://static.tvmaze.com/uploads/images/original_untouched/615/1539579.jpg"
+      }
+    }
+  },
+  {
+    "show": {
+      "id": 89871,
+      "name": "Narco Mennonites",
+      "type": "Documentary",
+      "image": {
+        "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/611/1527532.jpg",
+        "original": "https://static.tvmaze.com/uploads/images/original_untouched/611/1527532.jpg"
+      }
+    }
+  },
+  {
+    "show": {
+      "id": 5183,
+      "name": "Subete ga F ni Naru: The Perfect Insider",
+      "type": "Animation",
+      "image": {
+        "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/21/54654.jpg",
+        "original": "https://static.tvmaze.com/uploads/images/original_untouched/21/54654.jpg"
+      }
+    }
+  },
+  {
+    "show": {
+      "id": 52278,
+      "name": "Narco Wars",
+      "type": "Documentary",
+      "image": {
+        "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/287/717993.jpg",
+        "original": "https://static.tvmaze.com/uploads/images/original_untouched/287/717993.jpg"
+      }
+    }
+  },
+  {
+    "show": {
+      "id": 53264,
+      "name": "American Auto",
+      "type": "Scripted",
+      "image": {
+        "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/442/1107201.jpg",
+        "original": "https://static.tvmaze.com/uploads/images/original_untouched/442/1107201.jpg"
+      }
+    }
+  }
+]

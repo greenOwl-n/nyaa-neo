@@ -4,6 +4,8 @@ import dev.nyaaneo.model.Category
 import dev.nyaaneo.model.FeedFilter
 import dev.nyaaneo.model.Torrent
 import dev.nyaaneo.model.TorrentPageDetails
+import dev.nyaaneo.model.TorrentSource
+import dev.nyaaneo.model.AdultCategory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
@@ -19,36 +21,38 @@ class NyaaRepository(
         .callTimeout(35, TimeUnit.SECONDS).build(),
     private val parser: RssParser = RssParser(),
 ) {
-    suspend fun search(query: String, category: Category, filter: FeedFilter): List<Torrent> =
+    suspend fun search(query: String, category: Category, filter: FeedFilter,
+        source: TorrentSource = TorrentSource.NYAA, adultCategory: AdultCategory = AdultCategory.ANIME): List<Torrent> =
         withContext(Dispatchers.IO) {
-            val request = Request.Builder().url(buildFeedUrl(query, category, filter))
-                .header("User-Agent", "NyaaNeo/0.2 (Android RSS client)")
+            val request = Request.Builder().url(buildFeedUrl(query, category, filter, source, adultCategory))
+                .header("User-Agent", "NyaaNeo/0.3 (Android RSS client)")
                 .header("Accept", "application/rss+xml, application/xml, text/xml").build()
             val response = client.newCall(request).awaitResponse()
             response.use {
-                if (!it.isSuccessful) throw IOException("Nyaa.si respondió HTTP ${it.code}. Inténtalo más tarde.")
+                if (!it.isSuccessful) throw IOException("${source.label} respondió HTTP ${it.code}. Inténtalo más tarde.")
                 val xml = it.readLimitedText()
                 if (!xml.contains("<rss", ignoreCase = true)) throw IOException("Nyaa.si no devolvió un RSS válido.")
-                parser.parse(xml.reader())
+                parser.parse(xml.reader(), source)
             }
         }
 
-    suspend fun details(id: String): TorrentPageDetails = withContext(Dispatchers.IO) {
+    suspend fun details(id: String, source: TorrentSource = TorrentSource.NYAA): TorrentPageDetails = withContext(Dispatchers.IO) {
         require(id.matches(Regex("\\d+")))
-        val request = Request.Builder().url("https://nyaa.si/view/$id")
-            .header("User-Agent", "NyaaNeo/0.2 (Android client)").build()
+        val request = Request.Builder().url("https://${source.host}/view/$id")
+            .header("User-Agent", "NyaaNeo/0.3 (Android client)").build()
         client.newCall(request).awaitResponse().use { response ->
-            if (!response.isSuccessful) throw IOException("Nyaa.si respondió HTTP ${response.code}.")
+            if (!response.isSuccessful) throw IOException("${source.label} respondió HTTP ${response.code}.")
             NyaaPageParser().parse(response.readLimitedText())
         }
     }
 
     companion object {
-        fun buildFeedUrl(query: String, category: Category, filter: FeedFilter): HttpUrl =
-            "https://nyaa.si/".toHttpUrl().newBuilder()
+        fun buildFeedUrl(query: String, category: Category, filter: FeedFilter,
+            source: TorrentSource = TorrentSource.NYAA, adultCategory: AdultCategory = AdultCategory.ANIME): HttpUrl =
+            "https://${source.host}/".toHttpUrl().newBuilder()
                 .addQueryParameter("page", "rss")
                 .addQueryParameter("q", query.trim())
-                .addQueryParameter("c", category.code)
+                .addQueryParameter("c", if (source == TorrentSource.SUKEBEI) adultCategory.code else category.code)
                 .addQueryParameter("f", filter.code).build()
     }
 }

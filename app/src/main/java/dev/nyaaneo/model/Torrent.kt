@@ -13,9 +13,12 @@ data class Torrent(
     val trusted: Boolean = false,
     val categoryId: String = "",
     val uploader: String? = null,
+    val source: TorrentSource = TorrentSource.NYAA,
 ) {
-    val pageUrl: String get() = "https://nyaa.si/view/$id"
-    val releaseInfo: ReleaseInfo by lazy { ReleaseInfo.from(title, categoryId, category) }
+    val key: String get() = source.key(id)
+    val pageUrl: String get() = "https://${source.host}/view/$id"
+    val releaseInfo: ReleaseInfo by lazy { ReleaseInfo.from(title, categoryId, category, source) }
+    val artworkSearch: ArtworkSearch? by lazy { ArtworkSearch.from(this) }
 }
 
 enum class Category(val code: String, val label: String) {

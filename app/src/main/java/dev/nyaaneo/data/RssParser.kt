@@ -1,6 +1,7 @@
 package dev.nyaaneo.data
 
 import dev.nyaaneo.model.Torrent
+import dev.nyaaneo.model.TorrentSource
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
@@ -8,7 +9,7 @@ import java.io.Reader
 
 /** Namespace-aware RSS parser: only accepts numeric Nyaa IDs and valid BTIH hashes. */
 class RssParser {
-    fun parse(reader: Reader): List<Torrent> {
+    fun parse(reader: Reader, source: TorrentSource = TorrentSource.NYAA): List<Torrent> {
         val parser = XmlPullParserFactory.newInstance().apply { isNamespaceAware = true }.newPullParser()
         // DTD processing is off by default. Some providers reject setFeature(false),
         // so verify the default and reject DOCDECL tokens explicitly below.
@@ -35,7 +36,7 @@ class RssParser {
                 }
             } else if (event == XmlPullParser.END_TAG) {
                 if (parser.name == "item" && parser.depth == 3) {
-                    fields?.toTorrent()?.let(torrents::add)
+                    fields?.toTorrent(source)?.let(torrents::add)
                     fields = null
                 }
                 if (parser.name == "rss" && parser.depth == 1) rootClosed = true
@@ -43,12 +44,13 @@ class RssParser {
             event = parser.nextToken()
         }
         if (!rootClosed || !channelSeen) throw XmlPullParserException("El documento RSS está incompleto")
-        return torrents.distinctBy { it.id }
+        return torrents.distinctBy { it.key }
     }
 
-    private fun Map<String, String>.toTorrent(): Torrent? {
+    private fun Map<String, String>.toTorrent(source: TorrentSource): Torrent? {
+        val idPattern = Regex("^https://${Regex.escape(source.host)}/view/(\\d+)(?:[/?#].*)?$")
         val id = listOf(get("guid"), get("link")).firstNotNullOfOrNull { value ->
-            value?.let { ID.find(it)?.groupValues?.get(1) }
+            value?.let { idPattern.find(it)?.groupValues?.get(1) }
         } ?: return null
         val title = get("title")?.takeIf { it.isNotBlank() } ?: return null
         val hash = get("infoHash")?.takeIf { HASH.matches(it) }
@@ -61,6 +63,7 @@ class RssParser {
             get("pubDate") ?: "", number("seeders"), number("leechers"), number("downloads"),
             get("trusted").equals("yes", true) || get("trusted").equals("true", true),
             get("categoryId") ?: "",
+            source = source,
         )
     }
 
@@ -68,7 +71,6 @@ class RssParser {
 
     companion object {
         private val TAGS = setOf("title", "link", "guid", "pubDate", "infoHash", "size", "category", "categoryId", "seeders", "leechers", "downloads", "trusted")
-        private val ID = Regex("https://nyaa\\.si/view/(\\d+)(?:[/?#].*)?$")
         private val HASH = Regex("(?:[a-fA-F0-9]{40}|[A-Z2-7a-z]{32})")
         private val MAGNET_HASH = Regex("urn:btih:([^&]+)", RegexOption.IGNORE_CASE)
     }

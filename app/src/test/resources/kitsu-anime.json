@@ -40,7 +40,30 @@
               }
             }
           }
-        }
+        },
+        "coverImage": {
+          "tiny": "https://media.kitsu.app/anime/cover_images/1555/tiny.jpg",
+          "large": "https://media.kitsu.app/anime/cover_images/1555/large.jpg",
+          "small": "https://media.kitsu.app/anime/cover_images/1555/small.jpg",
+          "original": "https://media.kitsu.app/anime/cover_images/1555/original.jpg",
+          "meta": {
+            "dimensions": {
+              "tiny": {
+                "width": 840,
+                "height": 200
+              },
+              "large": {
+                "width": 3360,
+                "height": 800
+              },
+              "small": {
+                "width": 1680,
+                "height": 400
+              }
+            }
+          }
+        },
+        "ageRating": "PG"
       }
     },
     {
@@ -82,7 +105,30 @@
               }
             }
           }
-        }
+        },
+        "coverImage": {
+          "tiny": "https://media.kitsu.app/anime/cover_images/11/tiny.jpg",
+          "large": "https://media.kitsu.app/anime/cover_images/11/large.jpg",
+          "small": "https://media.kitsu.app/anime/cover_images/11/small.jpg",
+          "original": "https://media.kitsu.app/anime/cover_images/11/original.jpg",
+          "meta": {
+            "dimensions": {
+              "tiny": {
+                "width": 840,
+                "height": 200
+              },
+              "large": {
+                "width": 3360,
+                "height": 800
+              },
+              "small": {
+                "width": 1680,
+                "height": 400
+              }
+            }
+          }
+        },
+        "ageRating": "PG"
       }
     }
   ]

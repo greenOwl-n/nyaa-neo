@@ -52,7 +52,7 @@ data class ReleaseInfo(
     }
 
     companion object {
-        fun from(title: String, categoryId: String, category: String): ReleaseInfo {
+        fun from(title: String, categoryId: String, category: String, source: TorrentSource = TorrentSource.NYAA): ReleaseInfo {
             val leading = Regex("^\\s*\\[([^]\\r\\n]+)]").find(title)?.groupValues?.get(1)?.trim()
             val group = leading?.takeUnless { isTechnicalTag(it) }?.takeIf { it.length in 2..70 }
             // Do not derive languages from a group's name (e.g. a group called SpanishSub).
@@ -70,8 +70,8 @@ data class ReleaseInfo(
             if ("de" in tokens) languages += ReleaseLanguage.GERMAN
             if ("it" in tokens) languages += ReleaseLanguage.ITALIAN
             if ("jp" in tokens || "ja" in tokens) languages += ReleaseLanguage.JAPANESE
-            val raw = categoryId in setOf("1_4", "3_3", "4_4") || category.contains("Raw", true)
-            val english = if (categoryId.isNotBlank()) categoryId in setOf("1_2", "3_1", "4_1")
+            val raw = (source == TorrentSource.NYAA && categoryId in setOf("1_4", "3_3", "4_4")) || category.contains("Raw", true)
+            val english = if (source != TorrentSource.NYAA) false else if (categoryId.isNotBlank()) categoryId in setOf("1_2", "3_1", "4_1")
                 else category.contains("English-translated", true) && !category.contains("Non-English", true)
             val anime = categoryId.startsWith("1_") || category.startsWith("Anime", true)
             return ReleaseInfo(group, languages,
@@ -80,13 +80,14 @@ data class ReleaseInfo(
                 raw, english,
                 Regex("(?i)\\b(?:2160|1080|720|576|480)p\\b").find(rest)?.value?.lowercase(Locale.ROOT),
                 Regex("(?i)\\b(?:WEB[ .-]?DL|WEBRip|Blu[ .-]?Ray|BDRip|BDMV|HDTV|DVD(?:Rip)?)\\b").find(title)?.value?.uppercase(Locale.ROOT),
-                if (anime && categoryId != "1_1") animeSearchTitle(title) else null,
+                if (source == TorrentSource.NYAA && anime && categoryId != "1_1") animeSearchTitle(title) else null,
             )
         }
 
         private fun isTechnicalTag(tag: String): Boolean {
             val text = normalize(tag)
-            if (text in setOf("es", "en", "fr", "pt", "de", "it", "ja", "jp", "dual audio", "dual-audio") ||
+            if (text in setOf("es", "en", "fr", "pt", "de", "it", "ja", "jp", "dual audio", "dual-audio",
+                "manga", "digital", "scan", "cbz", "cbr", "pdf", "epub", "light novel", "ln") ||
                 Regex("\\d+(?:-\\d+)?").matches(text)) return true
             if (Regex("\\b(?:\\d{3,4}p|hevc|av1|x26[45]|h[ .]?26[45]|s\\d{1,2})\\b").containsMatchIn(text)) return true
             return Regex("(?:[a-f0-9]{8}|\\d{3,4}p|bdmv|bdrip|bluray|web[- ]?dl|webrip|hevc|av1|x26[45]|h[ .]?26[45]|raw|multi[- ]?(?:sub|audio)s?|\\d{4})")
@@ -115,4 +116,8 @@ data class TorrentPageDetails(
     val downloads: Int?,
 )
 
-data class AnimeArtwork(val title: String, val imageUrl: String, val pageUrl: String)
+data class AnimeArtwork(
+    val title: String, val imageUrl: String, val pageUrl: String,
+    val provider: String = "Kitsu", val bannerUrl: String? = null,
+    val alternateImages: List<String> = emptyList(),
+)
