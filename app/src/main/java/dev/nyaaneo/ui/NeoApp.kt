@@ -6,7 +6,6 @@ import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,6 +35,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.core.net.toUri
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.*
 import dev.nyaaneo.model.*
@@ -362,7 +362,7 @@ private fun SettingsScreen(state: NeoState, model: NeoViewModel) {
 
 private fun openExternal(context: Context, url: String, onMessage: (String) -> Unit) {
     try {
-        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE))
+        context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()).addCategory(Intent.CATEGORY_BROWSABLE))
     } catch (_: ActivityNotFoundException) {
         onMessage(if (url.startsWith("magnet:")) "No hay una aplicación instalada para abrir magnets. Puedes copiar el enlace." else "No hay un navegador disponible.")
     } catch (_: SecurityException) { onMessage("Android no permitió abrir el enlace.") }

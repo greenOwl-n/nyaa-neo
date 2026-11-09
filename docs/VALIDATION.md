@@ -10,9 +10,26 @@ Este archivo documenta evidencia real. No sustituye una prueba de uso en Android
 
 El primer intento detectó que el Java 21 preinstalado era un runtime sin compilador (`JAVA_COMPILER`). Se instaló un JDK 17 completo en el workspace y se repitió la compilación. La configuración del proyecto no depende de las rutas locales de este entorno.
 
-## Comprobaciones en curso
+## Resultado local comprobado
 
-Se está ejecutando la compilación de depuración, las pruebas unitarias y Android Lint. Se actualizará este apartado con el resultado final antes de entregar el proyecto.
+Comando ejecutado con el wrapper del proyecto y Java 17:
+
+```sh
+bash ./gradlew :app:assembleDebug :app:testDebugUnitTest :app:lintDebug --console=plain
+```
+
+Resultado del 9 de noviembre de 2026: **BUILD SUCCESSFUL in 56s**.
+
+- APK generado: `app/build/outputs/apk/debug/app-debug.apk`.
+- 15 pruebas unitarias, 0 fallos y 0 omitidas: 12 de RSS/URL/orden y 3 de serialización de favoritos.
+- Android Lint: 0 errores; 6 advertencias por versiones más recientes de dependencias. Se mantuvieron las versiones fijadas y comprobadas; no se deshabilitó ningún detector.
+- `apksigner verify --verbose`: firma APK v2 válida.
+- `aapt dump badging`: `dev.nyaaneo`, versión `0.1.0` (código 1), mínimo API 26 y target API 35.
+- `bash ./gradlew --version`: Gradle 8.11.1 descargado y checksum oficial validado.
+
+Las pruebas detectaron y permitieron corregir la opción DTD no admitida por algunos proveedores XML y la aceptación de documentos truncados. Lint detectó un atributo de navegación de API 27 en los recursos base; se sustituyó por `SystemBarStyle.dark` de AndroidX, compatible con el mínimo API 26. Las barras conservan iconos claros también cuando el sistema usa tema claro.
+
+No se ha instalado ni ejecutado el APK en un dispositivo o emulador en esta sesión. La prueba de interacción y de persistencia real de DataStore en Android sigue pendiente; las pruebas JVM cubren la serialización de los datos guardados.
 
 ## RSS real
 

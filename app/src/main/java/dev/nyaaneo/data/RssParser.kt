@@ -2,6 +2,7 @@ package dev.nyaaneo.data
 
 import dev.nyaaneo.model.Torrent
 import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.Reader
 
@@ -15,23 +16,33 @@ class RssParser {
         parser.setInput(reader)
         val torrents = mutableListOf<Torrent>()
         var fields: MutableMap<String, String>? = null
+        var channelSeen = false
+        var rootClosed = false
         var event = parser.eventType
         while (event != XmlPullParser.END_DOCUMENT) {
             // Nyaa RSS needs no DTD. Reject it explicitly, including internal entities.
             require(event != XmlPullParser.DOCDECL) { "El RSS contiene un DTD no permitido" }
             if (event == XmlPullParser.START_TAG) {
-                if (parser.name == "item") {
+                if (parser.depth == 1 && parser.name != "rss") {
+                    throw XmlPullParserException("La respuesta no es un documento RSS")
+                }
+                if (parser.name == "channel" && parser.depth == 2) channelSeen = true
+                if (parser.name == "item" && parser.depth == 3 && channelSeen) {
                     fields = mutableMapOf()
-                } else if (fields != null && parser.name in TAGS) {
+                } else if (fields != null && parser.depth == 4 && parser.name in TAGS) {
                     val key = parser.name
                     fields[key] = parser.nextText().trim()
                 }
-            } else if (event == XmlPullParser.END_TAG && parser.name == "item") {
-                fields?.toTorrent()?.let(torrents::add)
-                fields = null
+            } else if (event == XmlPullParser.END_TAG) {
+                if (parser.name == "item" && parser.depth == 3) {
+                    fields?.toTorrent()?.let(torrents::add)
+                    fields = null
+                }
+                if (parser.name == "rss" && parser.depth == 1) rootClosed = true
             }
             event = parser.nextToken()
         }
+        if (!rootClosed || !channelSeen) throw XmlPullParserException("El documento RSS está incompleto")
         return torrents.distinctBy { it.id }
     }
 

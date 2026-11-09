@@ -16,3 +16,6 @@ Se inicia el proyecto desde cero: no había repositorio ni código previo dispon
 - Pruebas de RSS, codificación de búsquedas, orden y serialización de favoritos.
 - Corrección tras las pruebas: compatibilidad entre proveedores XML al desactivar DTD, conservando su rechazo explícito.
 - Corrección tras la primera ejecución de Actions: eliminar la instalación implícita del paquete obsoleto Android `tools`.
+- Rechazo explícito de HTML y RSS truncado; 15 pruebas unitarias verificadas.
+- Corrección de compatibilidad API 26 en las barras del sistema y reglas explícitas de exclusión de backup/transferencia en Android 12+.
+- Compilación local, pruebas y Android Lint completados; firma APK v2 comprobada.

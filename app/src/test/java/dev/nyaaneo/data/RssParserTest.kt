@@ -53,6 +53,10 @@ class RssParserTest {
         assertTrue(torrent.magnet.contains("45008e48c8800b7d7643337b2e70a634e4c69f6a"))
     }
     @Test(expected = org.xmlpull.v1.XmlPullParserException::class) fun rejectsMalformedXml() { RssParser().parse("<rss><channel><item>".reader()) }
+    @Test(expected = org.xmlpull.v1.XmlPullParserException::class) fun rejectsHtmlResponse() { RssParser().parse("<html><body>Unavailable</body></html>".reader()) }
+    @Test(expected = org.xmlpull.v1.XmlPullParserException::class) fun rejectsTruncatedFeedAfterValidItems() {
+        RssParser().parse(feed(item()).removeSuffix("</rss>").reader())
+    }
     @Test fun rejectsDtdAndExternalEntities() {
         val error = assertThrows(IllegalArgumentException::class.java) {
             RssParser().parse("""<!DOCTYPE rss [<!ENTITY x SYSTEM "file:///etc/passwd">]><rss><channel>&x;</channel></rss>""".reader())
